@@ -18,29 +18,30 @@ from knn_module import KnnModule
 from evaluate_module import EvaluateModule
 
 dts = DataSet()
-dts.setFilePath("bases/sub_bases_nslkdd_20attribute/")
-#dts.setFileName("base_iris.csv")
+dts.setFilePath("bases/gstav_first_attempt/")
+dts.setFileName("testes/base_iris.csv")
 #dts.setFileName("SmallTrainingSet.csv")
-##dts.setFileName("winequality-red.csv")
+#dts.setFileName("winequality-red.csv")
 #dts.setFileName("NSL_KDD-master/20PercentTrainingSet.csv")
-dts.setFileName("NSL_KDD-master/KDDTrain+binary_class.csv")
+#dts.setFileName("NSL_KDD-master/KDDTrain+binary_class.csv")
 #dts.setFileName("NSL_KDD-master/SmallTrainingSet.csv")
 #dts.setFileName("NSL_KDD-master/SmallTrainingSetFiveClass.csv")
-
 #dts.setFileName("../../KDDCUP99/kddcup10%.csv")
 
 
 #print("load data")
-#ts.loadData(10)
+dts.loadData(6)
 
 
+
+'''
 #CONFIGURACAO DO KNN
 knn = KnnModule()
 knn.setKNeighbors(1)
 knn_classifier = KnnClassifier()
 knn_classifier.setKnn(knn)
 
-#CONFIGURACAO DA REDE NEURAL 
+#CONFIGURACAO DA REDE NEURAL
 rna = RnaModule()
 rna.setNumberNeuronsImputLayer(41)
 rna.setActivationFunctionImputLayer("tanh")
@@ -52,21 +53,23 @@ rna.setActivationFunctionOutputLayer("tanh")
 rna_classifier = RnaClassifier()
 rna_classifier.setRna(rna)
 
-#METODO HIBRIDO 
+#METODO HIBRIDO
 hybrid_classifier = HybridClassifier()
 hybrid_classifier.setPercentilFaixaSup(25)
 hybrid_classifier.setPercentilFaixaInf(100)
 hybrid_classifier.setRna(rna)
 hybrid_classifier.setKnn(knn)
-
+'''
 
 #PREPROCESSADOR PARA ATRIBUTOS CATEGORICOS
 preprocessor = Preprocessor()
 preprocessor.setColumnsCategory(['protocol_type','service','flag'])
 
+'''
 evaluate = EvaluateModule()
 
 cross = CrossValidation()
+
 #DEFINIR A ITERACAO QUE O CROSS VALIDATION ESTA
 cross.setIteration(1)
 cross.setK(10)
@@ -90,3 +93,5 @@ cross.setClassifier(hybrid_classifier)
 
 cross.setEvaluateModule(evaluate)
 cross.run()
+
+'''
