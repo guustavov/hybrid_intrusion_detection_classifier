@@ -28,7 +28,7 @@ class CrossValidation(object):
 
 	evaluate = None
 
-	#numero de folds 
+	#numero de folds
 	k = 1
 
 	file_path = ""
@@ -38,7 +38,7 @@ class CrossValidation(object):
 	preprocessor = None
 
 	def __init__(self):
-		print("init")
+		# print("Cross Validation constructor")
 		self.evaluate = EvaluateModule()
 
 	def run(self):
@@ -68,14 +68,14 @@ class CrossValidation(object):
 			self.classifier.setIteration(self.iteration)
 			#executa o processo de treino e teste do classificador
 			self.classifier.run()
-			
+
 			del(self.training_sub_data_set)
-			self.loadTestData()
+			# self.loadTestData()
 			#seta conjunto de dados original de teste e iteracao atual do cross-validation na classe de avaliacao
 			self.evaluate.setTestDataSet(self.teste_sub_data_set)
 			self.evaluate.setIteration(self.iteration)
 
-			#verifica quel o metodo de classificacao utilziado 
+			#verifica quel o metodo de classificacao utilziado
 			if(isinstance(self.classifier, RnaClassifier)):
 				print("rna")
 				self.evaluate.setResultPath( self.result_path)
@@ -98,7 +98,7 @@ class CrossValidation(object):
 			self.evaluate.setTestTime(self.classifier.getTestTime())
 			#executa metodo de avaliacao
 			self.evaluate.run()
-	
+
 	#carrega conjunto de treinamento de acordo coma iteracao atual do cross valiadation
 	def loadTrainingData(self):
 		for i in range(1,(self.k+1)):
@@ -110,9 +110,9 @@ class CrossValidation(object):
 				else:
 					self.training_sub_data_set = DataSet.concatSubDataSet(self.training_sub_data_set, new_sub_data_set)
 				del(new_sub_data_set)
-		print(self.training_sub_data_set)
+		# print(self.training_sub_data_set)
 
-	#carrega conjunto de teste de acordo coma iteracao atual do cross valiadation
+	#carrega conjunto de teste de acordo com a iteracao atual do cross validation
 	def loadTestData(self):
 		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "sub_data_set_" + str((self.k+1)-self.iteration) + ".csv")
 
@@ -129,20 +129,24 @@ class CrossValidation(object):
 		self.preprocessor = preprocessor
 
 	def getPreprocessor(self):
-		return preprocessor	
+		return preprocessor
 
 	def setEvaluateModule(self, evaluate):
 		self.evaluate = evaluate
 
 	def getEvaluateModule(self):
-		return evaluate	
+		return evaluate
 
 	def setFilePath(self, file_path):
 		self.file_path = file_path
 
 	def setResultPath(self, result_path):
+		directory = os.path.dirname(result_path)
+		if not os.path.exists(directory):
+			# print("nom ecsiste")
+			os.makedirs(directory)
+
 		self.result_path = result_path
 
 	def setK(self, k):
 		self.k = k
-
