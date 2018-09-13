@@ -1,6 +1,7 @@
 import pandas
 import os
 import random
+import numpy as np
 
 class DataSet(object):
 
@@ -12,13 +13,24 @@ class DataSet(object):
 	file_path = ""
 
 	def __init__(self):
-		print "init"
+		pass
 
 	#funcao para carregar base de dados
-	def loadData(self, k):
-		self.dataframe_data_set = pandas.read_csv("bases/" + self.file_name)
-		#funcao para particionar a base de dados em K conjuntos de modo aleatorio
-		self.partitionDataSet(k)
+	def loadData(self):
+		self.dataframe_data_set = pandas.read_csv(self.file_name)
+		#print self.dataframe_data_set.columns
+		self.transformNames()
+
+
+	#remove espacos que possam existir antes ou depois dos nomes de atributos
+	def transformNames(self):
+		columns = self.dataframe_data_set.columns
+		tamanho = len(columns)
+		for a in range(0, tamanho):
+			columns.values[a] = columns.values[a].strip().replace(' ', '_').replace('/s','_per_second').replace('/','_per_').lower()
+
+		#transforma NaN em 0.0.0.0 (IP invalido) para o attr external_ip
+		self.dataframe_data_set.external_ip = self.dataframe_data_set.external_ip.replace(np.nan, '0.0.0.0')
 
 	def selectExamples(self):
 		lista = range(0, self.dataframe_data_set.shape[0])
@@ -32,10 +44,10 @@ class DataSet(object):
 
 		directory = os.path.dirname(self.file_path)
 		if not os.path.exists(directory):
-			print("nom ecsiste")
+			#print("nom ecsiste")
 			os.makedirs(directory)
-		else:
-			print("ecsiste")
+		#else:
+			#print("ecsiste")
 
 		data_set = []
 		data_set_posicoes = []
@@ -95,6 +107,7 @@ class DataSet(object):
 		self.number_partitions = k
 		self.partition_size = (self.dataframe_data_set.shape[0] / k)
 		self.selectExamples()
+		print self.dataframe_data_set
 
 	@classmethod
 	def loadSubDataSet(self, file_name):
