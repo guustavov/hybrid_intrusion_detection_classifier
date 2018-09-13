@@ -1,3 +1,4 @@
+
 import numpy as np
 import tensorflow as tf
 from keras.callbacks import CSVLogger
@@ -12,6 +13,14 @@ from keras.preprocessing import sequence
 from keras import backend as K
 from keras.callbacks import EarlyStopping
 
+# data1 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Monday-WorkingHours.pcap_ISCX.csv')
+# data2 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Tuesday-WorkingHours.pcap_ISCX.csv')
+# data3 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Wednesday-workingHours.pcap_ISCX.csv')
+# data4 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv')
+# data5 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv')
+# data6 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Friday-WorkingHours-Morning.pcap_ISCX.csv')
+# data7 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv')
+# data8 = read.csv('/media/gstav/Data/github/bases/CIC-IDS-2017/CSVs/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv')
 
 class RnaModule(object):
 	#conjuto de exemplos de treino
@@ -37,7 +46,8 @@ class RnaModule(object):
 	model = None
 
 	def __init__(self):
-		print("init rna module")
+		# print("ANN module constructor")
+		pass
 
 	#funcao para criar a rna para abordagem simples
 	def generateModel(self):
@@ -45,10 +55,12 @@ class RnaModule(object):
 		self.model.add(Dense(self.number_neurons_imput_layer, input_dim= self.imput_dim_neurons, init='normal', activation=self.activation_function_imput_layer))
 		self.model.add(Dense(self.number_neurons_hidden_layer, init='normal', activation=self.activation_function_hidden_layer))
 		self.model.add(Dense(self.number_neurons_output_layer, init='normal', activation=self.activation_function_output_layer))
-	
+
 		self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-		csv_logger = CSVLogger('training.log')
-		
+
+		# passar por callback na funcao fit
+		# csv_logger = CSVLogger('training.log')
+
 		#funcao para interromper treinamento quando o erro for suficientemente pequeno
 		early_stopping = EarlyStopping(monitor='loss',patience=20)
                 fit = self.model.fit(self.data_set_samples, self.data_set_labels, epochs=500, verbose=2, callbacks=[early_stopping])
@@ -59,7 +71,7 @@ class RnaModule(object):
 		self.model.add(Dense(self.number_neurons_imput_layer, input_dim= self.imput_dim_neurons, init='normal', activation=self.activation_function_imput_layer))
 		self.model.add(Dense(self.number_neurons_hidden_layer, init='normal', activation=self.activation_function_hidden_layer))
 		self.model.add(Dense(self.number_neurons_output_layer, init='normal', activation=self.activation_function_output_layer))
-	
+
 		self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 		csv_logger = CSVLogger('training.log')
 		#funcao para interromper treinamento quando o erro for suficientemente pequeno
@@ -73,7 +85,7 @@ class RnaModule(object):
 
 
 		predictions = self.model.predict_classes(self.data_set_samples)
-	
+
 		return layer_output, predictions, fit
 
 	#funcao utilizada para retornar o resultado da classificacao em termos de -1 a 1 (utilizada para a abordagem hibrida)
@@ -91,10 +103,10 @@ class RnaModule(object):
 		self.data_set_labels = data_set.values[:,(len(data_set.values[0])-2)]
 		#print(self.data_set_samples)
 		#print(self.data_set_labels)
-	
+
 	def setTestDataSet(self, test_data_set):
 		self.test_data_set_samples = test_data_set.values[:,0:(len(test_data_set.values[0])-2)]
-		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-2)]		
+		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-2)]
 		#print(self.test_data_set_samples)
 		#print(self.test_data_set_labels)
 
@@ -144,6 +156,4 @@ class RnaModule(object):
 		self.dim_imput_layer = dim_imput_layer
 
 	def getDimImputLayer(self):
-		return self.dim_imput_layer 
-
-
+		return self.dim_imput_layer

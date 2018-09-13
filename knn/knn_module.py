@@ -16,7 +16,8 @@ class KnnModule(object):
 	clf = None
 
 	def __init__(self):
-		print("init knn module")
+		# print("init knn module")
+		pass
 
 	#funcao que cria a base de exemplos do KNN
 	def buildExamplesBase(self):
@@ -33,12 +34,12 @@ class KnnModule(object):
 		self.data_set_labels = data_set.values[:,(len(data_set.values[0])-2)]
 		#print(self.data_set_samples)
 		#print(self.data_set_labels)
-		
+
 	def setTestDataSet(self, test_data_set):
 		self.test_data_set_samples = test_data_set.values[:,0:(len(test_data_set.values[0])-2)]
-		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-2)]		
+		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-2)]
 		#print(self.test_data_set_samples)
-		#print(self.test_data_set_labels)	
+		#print(self.test_data_set_labels)
 
 	def setKNeighbors(self, k_neighbors):
 		self.k_neighbors = k_neighbors

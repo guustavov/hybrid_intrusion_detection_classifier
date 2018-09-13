@@ -12,10 +12,10 @@ class RnaClassifier(object):
 	data_set = None
 	#conjunto de dados de teste
 	test_data_set = None
-	
+
 	rna = None
 	predictions = None
-	
+
 	#iteracao do processo de cross-validation
 	iteration = 0
 
@@ -26,14 +26,15 @@ class RnaClassifier(object):
 	result_path = ""
 
 	def __init__(self):
-		print "aa"
+		# print "ANN constructor"
+		pass
 
 	def run(self):
 		training_time_start = time.time()
-		print("RUN RNA classifier")
+		# print("RUN ANN classifier")
 		self.rna.setDataSet(self.data_set)
 		self.rna.setTestDataSet(self.test_data_set)
-		
+
 		#funcao para gerar o modelo e treina-lo
 		self.rna.generateModel()
 
@@ -50,7 +51,7 @@ class RnaClassifier(object):
 		for i in range(0,len(self.predictions)):
 			self.test_data_set.set_value(i,'classe',self.predictions[i])
 
-		DataSet.saveResults(self.result_path, self.iteration, self.test_data_set)	
+		DataSet.saveResults(self.result_path, self.iteration, self.test_data_set)
 
 	def setDataSet(self, data_set):
 		self.data_set = data_set

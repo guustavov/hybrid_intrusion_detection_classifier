@@ -24,7 +24,8 @@ class KnnClassifier(object):
 	knn = None
 
 	def __init__(self):
-		print "Knn classifier"
+		# print "Knn classifier"
+		pass
 
 
 	def run(self):
@@ -39,16 +40,16 @@ class KnnClassifier(object):
 		test_time_start = time.time()
 		#funcao para realizar a classificacao dos exemplos
 		self.predictions = self.knn.run()
-	
+
 		self.saveResults()
-		
+
 		self.test_time = time.time() - test_time_start
-	
+
 	#salva os resultados das classificacoes na pasta definida no arquivo main.py
 	def saveResults(self):
-		data_set = self.test_data_set[:] 
+		data_set = self.test_data_set[:]
 		for i in range(0,len(self.predictions)):
-			data_set.set_value(i,'classe',self.predictions[i])
+			data_set.set_value(i,'label',self.predictions[i])
 		DataSet.saveResults(self.result_path, self.iteration, data_set)
 
 	def setDataSet(self, data_set):
