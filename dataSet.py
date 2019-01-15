@@ -30,7 +30,8 @@ class DataSet(object):
 			columns.values[a] = columns.values[a].strip().replace(' ', '_').replace('/s','_per_second').replace('/','_per_').lower()
 
 		#transforma NaN em 0.0.0.0 (IP invalido) para o attr external_ip
-		self.dataframe_data_set.external_ip = self.dataframe_data_set.external_ip.replace(np.nan, '0.0.0.0')
+		if 'external_ip' in self.dataframe_data_set.columns:
+			self.dataframe_data_set.external_ip = self.dataframe_data_set.external_ip.replace(np.nan, '0.0.0.0')
 
 	def selectExamples(self):
 		lista = range(0, self.dataframe_data_set.shape[0])
