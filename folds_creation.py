@@ -33,7 +33,7 @@ for indexes in splitter.split(x, y):
 
     #define filter to transform non "benign" events to "malign"
     notBenignFilter = fold[classFeatureName] != "BENIGN"
-    fold.loc[mask, classFeatureName] = "MALIGN"
+    fold.loc[notBenignFilter, classFeatureName] = "MALIGN"
 
     folds.append(fold)
 
