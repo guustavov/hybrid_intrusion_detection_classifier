@@ -30,6 +30,11 @@ folds = []
 i = 0
 for indexes in splitter.split(x, y):
     fold = pd.DataFrame(dataset.values[indexes[1],], columns = names)
+
+    #define filter to transform non "benign" events to "malign"
+    notBenignFilter = fold[classFeatureName] != "BENIGN"
+    fold.loc[mask, classFeatureName] = "MALIGN"
+
     folds.append(fold)
 
     fold.to_csv(dts.file_path + "fold_" + str(i+1) + ".csv", index = False)
