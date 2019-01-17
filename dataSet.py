@@ -19,7 +19,7 @@ class DataSet(object):
 	def loadData(self):
 		self.dataframe_data_set = pandas.read_csv(self.file_name)
 		#print self.dataframe_data_set.columns
-		self.transformNames()
+		#self.transformNames()
 
 
 	#remove espacos que possam existir antes ou depois dos nomes de atributos
