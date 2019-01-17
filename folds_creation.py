@@ -5,20 +5,24 @@ from dataSet import DataSet
 from sklearn.model_selection import StratifiedKFold
 
 dts = DataSet()
-dts.setFilePath("../bases/CICIDS2017/10-folds/")
-dts.setFileName("../bases/CICIDS2017/total_selectedFeatures.csv")
+dts.setFilePath("../cicids2017/10-folds/")
+dts.setFileName("../cicids2017/total_selectedFeatures.csv")
 dts.loadData()
 
 directory = os.path.dirname(dts.file_path)
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-#removing all instances that have 'label' value missing
-dataset = dts.dataframe_data_set.dropna(subset=['label'])
+dataset = dts.dataframe_data_set
+
+classFeatureName = dataset.columns[len(dataset.columns) - 1]
+
+#removing all instances that have no class value
+dataset = dts.dataframe_data_set.dropna(subset=[classFeatureName])
 names = dataset.columns
 
-x = dataset.drop(['label'], axis = 1)
-y = dataset.label
+x = dataset.drop([classFeatureName], axis = 1)
+y = getattr(dataset, classFeatureName).values
 
 splitter = StratifiedKFold(n_splits = 10)
 
