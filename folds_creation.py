@@ -28,5 +28,5 @@ for indexes in splitter.split(x, y):
     fold = pd.DataFrame(dataset.values[indexes[1],], columns = names)
     folds.append(fold)
 
-    fold.to_csv(dts.file_path + "fold_" + str(i+1) + ".csv")
+    fold.to_csv(dts.file_path + "fold_" + str(i+1) + ".csv", index = False)
     i = i + 1
