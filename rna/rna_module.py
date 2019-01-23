@@ -32,14 +32,14 @@ class RnaModule(object):
 	#classes dos exemplos de teste
 	test_data_set_labels = []
 
-	number_neurons_imput_layer = 0
+	number_neurons_input_layer = 0
 	number_neurons_hidden_layer = 0
 	number_neurons_output_layer = 0
 
-	imput_dim_neurons = 0
+	input_dim_neurons = 0
 
 	#funcoes de ativacao dos neuronios de cada camada
-	activation_function_imput_layer = "relu"
+	activation_function_input_layer = "relu"
 	activation_function_hidden_layer = "relu"
 	activation_function_output_layer = "sigmoid"
 
@@ -52,7 +52,7 @@ class RnaModule(object):
 	#funcao para criar a rna para abordagem simples
 	def generateModel(self):
 		self.model = Sequential()
-		self.model.add(Dense(self.number_neurons_imput_layer, input_dim= self.imput_dim_neurons, init='normal', activation=self.activation_function_imput_layer))
+		self.model.add(Dense(self.number_neurons_input_layer, input_dim= self.input_dim_neurons, init='normal', activation=self.activation_function_input_layer))
 		self.model.add(Dense(self.number_neurons_hidden_layer, init='normal', activation=self.activation_function_hidden_layer))
 		self.model.add(Dense(self.number_neurons_output_layer, init='normal', activation=self.activation_function_output_layer))
 
@@ -68,7 +68,7 @@ class RnaModule(object):
     #funcao para criar a rna para a abordagem hibrida
 	def generateHybridModel(self):
 		self.model = Sequential()
-		self.model.add(Dense(self.number_neurons_imput_layer, input_dim= self.imput_dim_neurons, init='normal', activation=self.activation_function_imput_layer))
+		self.model.add(Dense(self.number_neurons_input_layer, input_dim= self.input_dim_neurons, init='normal', activation=self.activation_function_input_layer))
 		self.model.add(Dense(self.number_neurons_hidden_layer, init='normal', activation=self.activation_function_hidden_layer))
 		self.model.add(Dense(self.number_neurons_output_layer, init='normal', activation=self.activation_function_output_layer))
 
@@ -110,11 +110,11 @@ class RnaModule(object):
 		#print(self.test_data_set_samples)
 		#print(self.test_data_set_labels)
 
-	def setNumberNeuronsImputLayer(self, number):
-		self.number_neurons_imput_layer = number
+	def setNumberNeuronsInputLayer(self, number):
+		self.number_neurons_input_layer = number
 
-	def getNumberNeuronsImputLayer(self):
-		return self.number_neurons_imput_layer
+	def getNumberNeuronsInputLayer(self):
+		return self.number_neurons_input_layer
 
 	def setNumberNeuronsHiddenLayer(self, number):
 		self.number_neurons_hidden_layer = number
@@ -128,11 +128,11 @@ class RnaModule(object):
 	def getNumberNeuronsOutputLayer(self):
 		return self.number_neurons_output_layer
 
-	def setActivationFunctionImputLayer(self, activation_function):
-		self.activation_function_imput_layer = activation_function
+	def setActivationFunctionInputLayer(self, activation_function):
+		self.activation_function_input_layer = activation_function
 
-	def getActivationFunctionImputLayer(self):
-		return self.activation_function_imput_layer
+	def getActivationFunctionInputLayer(self):
+		return self.activation_function_input_layer
 
 	def setActivationFunctionHiddenLayer(self, activation_function):
 		self.activation_function_hidden_layer = activation_function
@@ -146,14 +146,14 @@ class RnaModule(object):
 	def getActivationFunctionOutputLayer(self):
 		return self.activation_function_output_layer
 
-	def setImputDimNeurons(self, number):
-		self.imput_dim_neurons = number
+	def setInputDimNeurons(self, number):
+		self.input_dim_neurons = number
 
-	def getNumberNeuronsImputLayer(self):
-		return self.imput_dim_neurons
+	def getNumberNeuronsInputLayer(self):
+		return self.input_dim_neurons
 
-	def setDimImputLayer(self, dim_imput_layer):
-		self.dim_imput_layer = dim_imput_layer
+	def setDimInputLayer(self, dim_input_layer):
+		self.dim_input_layer = dim_input_layer
 
-	def getDimImputLayer(self):
-		return self.dim_imput_layer
+	def getDimInputLayer(self):
+		return self.dim_input_layer
