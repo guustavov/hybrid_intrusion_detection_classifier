@@ -30,14 +30,14 @@ class KnnModule(object):
 		return predictions
 
 	def setDataSet(self, data_set):
-		self.data_set_samples = data_set.values[:,0:(len(data_set.values[0])-2)]
-		self.data_set_labels = data_set.values[:,(len(data_set.values[0])-2)]
+		self.data_set_samples = data_set.values[:,0:(len(data_set.values[0])-1)]
+		self.data_set_labels = data_set.values[:,(len(data_set.values[0])-1)]
 		#print(self.data_set_samples)
 		#print(self.data_set_labels)
 
 	def setTestDataSet(self, test_data_set):
-		self.test_data_set_samples = test_data_set.values[:,0:(len(test_data_set.values[0])-2)]
-		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-2)]
+		self.test_data_set_samples = test_data_set.values[:,0:(len(test_data_set.values[0])-1)]
+		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-1)]
 		#print(self.test_data_set_samples)
 		#print(self.test_data_set_labels)
 

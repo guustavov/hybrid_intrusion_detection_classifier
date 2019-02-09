@@ -29,7 +29,7 @@ class CrossValidation(object):
 	evaluate = None
 
 	#numero de folds
-	k = 1
+	k = 10
 
 	file_path = ""
 
@@ -102,8 +102,10 @@ class CrossValidation(object):
 	#carrega conjunto de treinamento de acordo coma iteracao atual do cross valiadation
 	def loadTrainingData(self):
 		for i in range(1,(self.k+1)):
+			print("a - " + self.file_path)
+			print("iteration"+str(self.iteration)+"--"+str(self.k+1))
 			if( ((self.k+1) - i) != self.iteration):
-				new_sub_data_set = DataSet.loadSubDataSet(self.file_path + "sub_data_set_" + str(i) + ".csv")
+				new_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str(i) + ".csv")
 
 				if (i==1):
 					self.training_sub_data_set = new_sub_data_set
@@ -114,7 +116,7 @@ class CrossValidation(object):
 
 	#carrega conjunto de teste de acordo com a iteracao atual do cross validation
 	def loadTestData(self):
-		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "sub_data_set_" + str((self.k+1)-self.iteration) + ".csv")
+		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str((self.k+1)-self.iteration) + ".csv")
 
 	def setIteration(self, iteration):
 		self.iteration = iteration
