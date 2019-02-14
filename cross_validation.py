@@ -1,8 +1,9 @@
 import numpy as np
 import sys, os
 from dataSet import DataSet
-import pandas
+import pandas as pd
 import time
+import glob
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/hybrid")
 from hybrid_classifier import HybridClassifier
 from evaluate_module import EvaluateModule
@@ -29,7 +30,7 @@ class CrossValidation(object):
 	evaluate = None
 
 	#numero de folds
-	k = 10
+	numberOfFolds = 10
 
 	file_path = ""
 
@@ -48,7 +49,7 @@ class CrossValidation(object):
 	def foldExecution(self):
 		i = self.iteration
 
-		for self.iteration in range(i,(self.k+1)):
+		for self.iteration in range(i,(self.numberOfFolds+1)):
 			tempo_inicio = time.time()
 			self.loadTrainingData()
 			self.loadTestData()
@@ -101,22 +102,14 @@ class CrossValidation(object):
 
 	#carrega conjunto de treinamento de acordo coma iteracao atual do cross valiadation
 	def loadTrainingData(self):
-		for i in range(1,(self.k+1)):
-			print("a - " + self.file_path)
-			print("iteration"+str(self.iteration)+"--"+str(self.k+1))
-			if( ((self.k+1) - i) != self.iteration):
-				new_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str(i) + ".csv")
-
-				if (i==1):
-					self.training_sub_data_set = new_sub_data_set
-				else:
-					self.training_sub_data_set = DataSet.concatSubDataSet(self.training_sub_data_set, new_sub_data_set)
-				del(new_sub_data_set)
-		# print(self.training_sub_data_set)
+		#exclude current cross validation iteration corresponding fold
+		trainFolds = glob.glob(self.file_path + 'fold_[!' + str(self.iteration - 1) + ']*.csv')
+		
+		self.training_sub_data_set = pd.concat((pd.read_csv(fold) for fold in trainFolds))
 
 	#carrega conjunto de teste de acordo com a iteracao atual do cross validation
 	def loadTestData(self):
-		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str((self.k+1)-self.iteration) + ".csv")
+		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str((self.numberOfFolds+1)-self.iteration) + ".csv")
 
 	def setIteration(self, iteration):
 		self.iteration = iteration
@@ -151,4 +144,4 @@ class CrossValidation(object):
 		self.result_path = result_path
 
 	def setK(self, k):
-		self.k = k
+		self.numberOfFolds = k
