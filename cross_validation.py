@@ -4,6 +4,7 @@ from dataSet import DataSet
 import pandas as pd
 import time
 import glob
+import pickle
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/hybrid")
 from hybrid_classifier import HybridClassifier
 from evaluate_module import EvaluateModule
@@ -82,7 +83,9 @@ class CrossValidation(object):
 				self.evaluate.setResultPath( self.result_path)
 			elif(isinstance(self.classifier, KnnClassifier)):
 				print("knn")
-				self.evaluate.setResultPath(self.result_path)
+				annModel = self.classifier.getRna().getModel()
+				pickle.dump(annModel, open(self.file_path + 'models/ann_' + str(self.iteration - 1), 'wb'))
+				# self.evaluate.setResultPath(self.result_path)
 			elif(isinstance(self.classifier, ClusteredKnnClassifier)):
 				print("clustered knn")
 				#self.evaluate.setResultPath(self.result_path)

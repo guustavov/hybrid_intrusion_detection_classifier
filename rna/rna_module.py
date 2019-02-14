@@ -63,7 +63,7 @@ class RnaModule(object):
 
 		#funcao para interromper treinamento quando o erro for suficientemente pequeno
 		early_stopping = EarlyStopping(monitor='loss',patience=20)
-                fit = self.model.fit(self.data_set_samples, self.data_set_labels, epochs=500, verbose=2, callbacks=[early_stopping])
+		fit = self.model.fit(self.data_set_samples, self.data_set_labels, epochs=500, verbose=2, callbacks=[early_stopping])
 
     #funcao para criar a rna para a abordagem hibrida
 	def generateHybridModel(self):
@@ -82,7 +82,6 @@ class RnaModule(object):
 		#obter valores da camada de saida da ultima iteracao do treinamento
 		get_3rd_layer_output = K.function([self.model.layers[0].input], [self.model.layers[2].output])
 		layer_output = get_3rd_layer_output([self.data_set_samples])[0]
-
 
 		predictions = self.model.predict_classes(self.data_set_samples)
 
@@ -157,3 +156,6 @@ class RnaModule(object):
 
 	def getDimInputLayer(self):
 		return self.dim_input_layer
+
+	def getModel(self):
+		return self.model
