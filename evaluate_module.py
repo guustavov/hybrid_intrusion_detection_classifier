@@ -41,15 +41,15 @@ class EvaluateModule(object):
 		result_dataframe = DataSet.loadResult(self.result_path , self.iteration)
 
 		#obtem numero de classes diferentes existentes no atributos classe
-		self.classes = Preprocessor.getClassesPerColumns(self.test_data_set,'label')
+		self.classes = Preprocessor.getClassesPerColumns(self.test_data_set,'Label')
 
 		acc_classes = []
 		err_classes = []
 
 		#posicao do atributo "classe" no vetor
 		# posicao_classe = len(result_dataframe.values[0]) -2
-		test_posicao_classe = self.test_data_set.columns.get_loc("label")
-		result_posicao_classe = result_dataframe.columns.get_loc("classe")
+		test_posicao_classe = self.test_data_set.columns.get_loc("Label")
+		result_posicao_classe = result_dataframe.columns.get_loc("Label")
 
 		# print self.test_data_set.values[0,test_posicao_classe]
 		# print result_dataframe.values[0,result_posicao_classe]

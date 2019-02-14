@@ -70,6 +70,8 @@ class HybridClassifier(object):
 
 		#cria base de exemplos do KNN
 		self.knn.buildExamplesBase()
+		print("KNN base dataset =>")
+		self.knn.clf.get_params()
 		self.training_time = time.time() - training_time_start
 
 		list_position_rna_classified_samples = []
@@ -97,11 +99,11 @@ class HybridClassifier(object):
 				if(self.predictions_rna[i] > (self.upper_threshold) ):
 					#print("CLASSIFICACAO CONFIAVEL!")
 					#realiza as modificacoes no dataframe dos exemplos originais de teste de acordo com a classificacao da RNA
-					self.test_data_set.set_value(i, 'classe', 1)
+					self.test_data_set.set_value(i, 'Label', 1)
 				elif( self.predictions_rna[i] < (self.lower_threshold)):
 					#print("CLASSIFICACAO CONFIAVEL!")
 					#realiza as modificacoes no dataframe dos exemplos originais de teste de acordo com a classificacao da RNA
-					self.test_data_set.set_value(i, 'classe', 0)
+					self.test_data_set.set_value(i, 'Label', 0)
 				else:
 					#print("FAIXA INTERMEDIARIA!")
 					#adiciona exemplos em um vetor de exemplos classificados como intermediarios
@@ -149,7 +151,7 @@ class HybridClassifier(object):
 
 		#realiza as modificacoes no dataframe dos exemplos originais de teste de acordo com a classificacao do KNN
 		for i in range(0,len(self.predictions_knn)):
-			self.test_data_set.set_value(list_position_intermediate_range_samples[i], 'classe', self.predictions_knn[i])
+			self.test_data_set.set_value(list_position_intermediate_range_samples[i], 'Label', self.predictions_knn[i])
 
 		#salva o data frame modificado como o resultado final
 		DataSet.saveResults( self.result_path + "final_method_classification/", self.iteration, self.test_data_set)
