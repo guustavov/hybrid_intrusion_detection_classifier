@@ -29,7 +29,7 @@ def splitDataset(dataset, classFeatureName, numberOfSplits = 10):
 
 def writeFoldsToCsv(folds, destinationPath):
     for index, fold in enumerate(folds):
-        fold.to_csv(destinationPath + "fold_" + str(index+1) + ".csv", index = False)
+        fold.to_csv(destinationPath + "fold_" + str(index) + ".csv", index = False)
 
 
 dts = DataSet()
