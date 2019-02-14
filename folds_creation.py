@@ -4,6 +4,34 @@ import numpy as np
 from dataSet import DataSet
 from sklearn.model_selection import StratifiedKFold
 
+def binarizeDataset(dataset, classFeatureName):
+    benignFilter = dataset[classFeatureName] == "BENIGN"
+    notBenignFilter = dataset[classFeatureName] != "BENIGN"
+
+    dataset.loc[benignFilter, classFeatureName] = 0
+    dataset.loc[notBenignFilter, classFeatureName] = 1
+
+    return dataset
+
+def splitDataset(dataset, classFeatureName, numberOfSplits = 10):
+    names = dataset.columns
+
+    x = dataset.drop([classFeatureName], axis = 1) #all instances with no class feature
+    y = getattr(dataset, classFeatureName).values #class feature of all instances
+
+    splitter = StratifiedKFold(n_splits = 10)
+
+    folds = []
+    for indexes in splitter.split(x, y):
+        folds.append(pd.DataFrame(dataset.values[indexes[1],], columns = names))
+
+    return folds
+
+def writeFoldsToCsv(folds, destinationPath):
+    for index, fold in enumerate(folds):
+        fold.to_csv(destinationPath + "fold_" + str(index+1) + ".csv", index = False)
+
+
 dts = DataSet()
 dts.setFilePath("../cicids2017/10-folds/")
 dts.setFileName("../cicids2017/total_selectedFeatures.csv")
@@ -19,23 +47,12 @@ classFeatureName = dataset.columns[len(dataset.columns) - 1]
 
 #removing all instances that have no class value
 dataset = dts.dataframe_data_set.dropna(subset=[classFeatureName])
-names = dataset.columns
 
-x = dataset.drop([classFeatureName], axis = 1)
-y = getattr(dataset, classFeatureName).values
+dataset = binarizeDataset(dataset, classFeatureName)
 
-splitter = StratifiedKFold(n_splits = 10)
+folds = splitDataset(dataset, classFeatureName, 10)
 
-folds = []
-i = 0
-for indexes in splitter.split(x, y):
-    fold = pd.DataFrame(dataset.values[indexes[1],], columns = names)
+#using only 10% of the original dataset
+folds = splitDataset(folds[0], classFeatureName, 10)
 
-    #define filter to transform non "benign" events to "malign"
-    notBenignFilter = fold[classFeatureName] != "BENIGN"
-    fold.loc[notBenignFilter, classFeatureName] = "MALIGN"
-
-    folds.append(fold)
-
-    fold.to_csv(dts.file_path + "fold_" + str(i+1) + ".csv", index = False)
-    i = i + 1
+writeFoldsToCsv(folds, dts.file_path)
