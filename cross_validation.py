@@ -148,7 +148,7 @@ class CrossValidation(object):
 	def setK(self, k):
 		self.numberOfFolds = k
 
-	def saveModelToFile(model, prefix):
+	def saveModelToFile(self, model, prefix):
 		directory = os.path.dirname(self.file_path + 'models/')
 		if not os.path.exists(directory):
 			os.makedirs(directory)
