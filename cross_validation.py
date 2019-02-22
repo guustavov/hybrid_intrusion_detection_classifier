@@ -1,8 +1,11 @@
 import numpy as np
 import sys, os
 from dataSet import DataSet
-import pandas
+import pandas as pd
 import time
+import glob
+import pickle
+import datetime
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/hybrid")
 from hybrid_classifier import HybridClassifier
 from evaluate_module import EvaluateModule
@@ -22,14 +25,14 @@ class CrossValidation(object):
 	classifier = None
 
 	#conjunto de dados de teste
-	teste_sub_data_set = None
+	testData = None
 	#conjunto de dados de treinamento
-	training_sub_data_set = None
+	trainingData = None
 
 	evaluate = None
 
 	#numero de folds
-	k = 10
+	numberOfFolds = 10
 
 	file_path = ""
 
@@ -48,31 +51,31 @@ class CrossValidation(object):
 	def foldExecution(self):
 		i = self.iteration
 
-		for self.iteration in range(i,(self.k+1)):
+		for self.iteration in range(i, self.numberOfFolds):
 			tempo_inicio = time.time()
 			self.loadTrainingData()
 			self.loadTestData()
 
 			#executa funcoes para transformacao de dados categoricos
 			if self.preprocessor:
-				self.preprocessor.setDataSet(self.training_sub_data_set)
-				self.preprocessor.setTestDataSet(self.teste_sub_data_set)
+				self.preprocessor.setDataSet(self.trainingData)
+				self.preprocessor.setTestDataSet(self.testData)
 
-				self.training_sub_data_set, self.teste_sub_data_set = self.preprocessor.transformCategory()
+				self.trainingData, self.testData = self.preprocessor.transformCategory()
 
 			#seta dados de treinamento e teste no classificador
-			self.classifier.setDataSet(self.training_sub_data_set)
-			self.classifier.setTestDataSet(self.teste_sub_data_set)
+			self.classifier.setDataSet(self.trainingData)
+			self.classifier.setTestDataSet(self.testData)
 
 			#seta iteracao do cross no classficador
 			self.classifier.setIteration(self.iteration)
 			#executa o processo de treino e teste do classificador
 			self.classifier.run()
 
-			del(self.training_sub_data_set)
+			del(self.trainingData)
 			# self.loadTestData()
 			#seta conjunto de dados original de teste e iteracao atual do cross-validation na classe de avaliacao
-			self.evaluate.setTestDataSet(self.teste_sub_data_set)
+			self.evaluate.setTestDataSet(self.testData)
 			self.evaluate.setIteration(self.iteration)
 
 			#verifica quel o metodo de classificacao utilziado
@@ -81,7 +84,7 @@ class CrossValidation(object):
 				self.evaluate.setResultPath( self.result_path)
 			elif(isinstance(self.classifier, KnnClassifier)):
 				print("knn")
-				self.evaluate.setResultPath(self.result_path)
+				# self.evaluate.setResultPath(self.result_path)
 			elif(isinstance(self.classifier, ClusteredKnnClassifier)):
 				print("clustered knn")
 				#self.evaluate.setResultPath(self.result_path)
@@ -90,6 +93,8 @@ class CrossValidation(object):
 				#self.evaluate.setResultPath(self.result_path)
 			elif(isinstance(self.classifier, HybridClassifier)):
 				print("hybrid")
+				annModel = self.classifier.getRna().getModel()
+				self.saveModelToFile(annModel, 'ann')
 				self.evaluate.setResultPath( self.result_path+"final_method_classification/")
 
 			tempo_execucao = time.time() - tempo_inicio
@@ -101,22 +106,14 @@ class CrossValidation(object):
 
 	#carrega conjunto de treinamento de acordo coma iteracao atual do cross valiadation
 	def loadTrainingData(self):
-		for i in range(1,(self.k+1)):
-			print("a - " + self.file_path)
-			print("iteration"+str(self.iteration)+"--"+str(self.k+1))
-			if( ((self.k+1) - i) != self.iteration):
-				new_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str(i) + ".csv")
-
-				if (i==1):
-					self.training_sub_data_set = new_sub_data_set
-				else:
-					self.training_sub_data_set = DataSet.concatSubDataSet(self.training_sub_data_set, new_sub_data_set)
-				del(new_sub_data_set)
-		# print(self.training_sub_data_set)
+		#exclude current cross validation iteration corresponding fold
+		trainFolds = glob.glob(self.file_path + 'fold_[!' + str(self.iteration) + ']*.csv')
+		
+		self.trainingData = pd.concat((pd.read_csv(fold) for fold in trainFolds))
 
 	#carrega conjunto de teste de acordo com a iteracao atual do cross validation
 	def loadTestData(self):
-		self.teste_sub_data_set = DataSet.loadSubDataSet(self.file_path + "fold_" + str((self.k+1)-self.iteration) + ".csv")
+		self.testData = DataSet.loadSubDataSet(self.file_path + "fold_" + str(self.iteration) + ".csv")
 
 	def setIteration(self, iteration):
 		self.iteration = iteration
@@ -145,10 +142,18 @@ class CrossValidation(object):
 	def setResultPath(self, result_path):
 		directory = os.path.dirname(result_path)
 		if not os.path.exists(directory):
-			# print("nom ecsiste")
 			os.makedirs(directory)
 
 		self.result_path = result_path
 
 	def setK(self, k):
-		self.k = k
+		self.numberOfFolds = k
+
+	def saveModelToFile(model, prefix):
+		directory = os.path.dirname(self.file_path + 'models/')
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+
+		fileName = directory + prefix + '_' + str(self.iteration - 1)
+		pickle.dump(model, open(fileName, 'wb'))
+		print('[' + str(datetime.datetime.now()).split('.')[0] + '] ' + fileName + ' saved [')

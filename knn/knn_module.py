@@ -5,15 +5,17 @@ from sklearn import neighbors
 
 class KnnModule(object):
 	#conjuto de exemplos de treino
-	data_set_samples = []
+	trainingX = []
 	#classes dos exemplos de treino
-	data_set_labels = []
+	trainingY = []
 	#conjunto de exemplos de teste
-	test_data_set_samples = []
+	testX = []
 	#classes dos exemplos de teste
-	test_data_set_labels = []
+	testY = []
 	k_neighbors = 1
 	clf = None
+
+	classFeatureName = 'Label'
 
 	def __init__(self):
 		# print("init knn module")
@@ -22,24 +24,24 @@ class KnnModule(object):
 	#funcao que cria a base de exemplos do KNN
 	def buildExamplesBase(self):
 		self.clf = neighbors.KNeighborsClassifier(self.k_neighbors, weights='uniform', algorithm='brute')
-		self.clf.fit(self.data_set_samples, self.data_set_labels)
+		self.clf.fit(self.trainingX, self.trainingY)
 
 	#funcao que realiza a classificacao dos exemplos
 	def run(self):
-		predictions = self.clf.predict(self.test_data_set_samples)
+		predictions = self.clf.predict(self.testX)
 		return predictions
 
-	def setDataSet(self, data_set):
-		self.data_set_samples = data_set.values[:,0:(len(data_set.values[0])-1)]
-		self.data_set_labels = data_set.values[:,(len(data_set.values[0])-1)]
-		#print(self.data_set_samples)
-		#print(self.data_set_labels)
+	def setDataSet(self, dataset):
+		self.trainingX = dataset.drop([self.classFeatureName], axis = 1) #all instances with no class feature
+		self.trainingY = getattr(dataset, self.classFeatureName).values #class feature of all instances
+		#print(self.trainingX)
+		#print(self.trainingY)
 
-	def setTestDataSet(self, test_data_set):
-		self.test_data_set_samples = test_data_set.values[:,0:(len(test_data_set.values[0])-1)]
-		self.test_data_set_labels = test_data_set.values[:,(len(test_data_set.values[0])-1)]
-		#print(self.test_data_set_samples)
-		#print(self.test_data_set_labels)
+	def setTestDataSet(self, dataset):
+		self.testX = dataset.drop([self.classFeatureName], axis = 1) #all instances with no class feature
+		self.testY = getattr(dataset, self.classFeatureName).values #class feature of all instances
+		#print(self.testX)
+		#print(self.testY)
 
 	def setKNeighbors(self, k_neighbors):
 		self.k_neighbors = k_neighbors

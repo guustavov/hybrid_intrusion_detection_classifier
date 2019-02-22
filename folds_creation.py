@@ -10,7 +10,7 @@ def binarizeDataset(dataset, classFeatureName):
 
     dataset.loc[benignFilter, classFeatureName] = 0
     dataset.loc[notBenignFilter, classFeatureName] = 1
-
+    
     return dataset
 
 def splitDataset(dataset, classFeatureName, numberOfSplits = 10):
@@ -27,9 +27,8 @@ def splitDataset(dataset, classFeatureName, numberOfSplits = 10):
 
     return folds
 
-def writeFoldsToCsv(folds, destinationPath):
-    for index, fold in enumerate(folds):
-        fold.to_csv(destinationPath + "fold_" + str(index+1) + ".csv", index = False)
+def writeFoldToCsv(fold, foldIndex, destinationPath):
+    fold.to_csv(destinationPath + "fold_" + str(foldIndex) + ".csv", index = False)
 
 
 dts = DataSet()
@@ -55,4 +54,5 @@ folds = splitDataset(dataset, classFeatureName, 10)
 #using only 10% of the original dataset
 folds = splitDataset(folds[0], classFeatureName, 10)
 
-writeFoldsToCsv(folds, dts.file_path)
+for index, fold in enumerate(folds):
+    writeFoldToCsv(fold, index, dts.file_path)

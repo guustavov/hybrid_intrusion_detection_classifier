@@ -3,6 +3,8 @@ import pandas
 import time
 import numpy as np
 
+from auxiliaryLog import auxlog
+
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../../../knn")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../../../rna")
 
@@ -32,11 +34,11 @@ class HybridClassifier(object):
 	training_time = 0
 	test_time = 0
 	limite_faixa_sup = 0
-        limite_faixa_inf = 0
+	limite_faixa_inf = 0
 
 
 	def __init__(self):
-		print("init")
+		pass
 
 	def run(self):
 		self.rna_classified_samples= []
@@ -46,6 +48,8 @@ class HybridClassifier(object):
 		self.rna.setTestDataSet(self.test_data_set)
 		self.knn.setDataSet(self.data_set)
 		training_time_start = time.time()
+
+		auxlog.log('CV ITERATION ' + str(self.iteration))
 
 		#funcao para gerar o modelo neural para a abordagem hibrida
 		outputs_training, predictions, history = self.rna.generateHybridModel()
@@ -70,7 +74,6 @@ class HybridClassifier(object):
 
 		#cria base de exemplos do KNN
 		self.knn.buildExamplesBase()
-		print("KNN base dataset =>")
 		self.knn.clf.get_params()
 		self.training_time = time.time() - training_time_start
 
@@ -82,12 +85,7 @@ class HybridClassifier(object):
 		#realiza classificacao atraves da RNA
 		self.predictions_rna = self.rna.predict()
 		self.test_time = time.time() - test_time_start
-                
-		tamanho_predicao = len(self.predictions_rna)
-		tamanho_data_set = len(self.test_data_set.values)
-		#posicao do atributo "classe" no vetor
-		posicao_classe = len(self.test_data_set.values[0]) - 2
-  		
+
 		if (self.verifyClassesPredictions(predictions) == True):
 			#define os limites superiores e inferiores de acordo com os valores de percentil para definir a faixa intermediaria (valores de percentil sao setados no arquivo main.py)
 			self.upper_threshold = np.percentile(positivos_serie,self.percentil_faixa_sup)
@@ -96,7 +94,7 @@ class HybridClassifier(object):
 			#verifica se valor esta dentro dos limites ou fora
 			for i in range(0,len(self.predictions_rna)):
 				print(self.predictions_rna[i])
-				if(self.predictions_rna[i] > (self.upper_threshold) ):
+				if(self.predictions_rna[i] > (self.upper_threshold)):
 					#print("CLASSIFICACAO CONFIAVEL!")
 					#realiza as modificacoes no dataframe dos exemplos originais de teste de acordo com a classificacao da RNA
 					self.test_data_set.set_value(i, 'Label', 1)
@@ -120,7 +118,8 @@ class HybridClassifier(object):
 			print(dataframe_rna_classified_samples)
 
 			#salva os resultados gerados pela RNA
-			DataSet.saveResults( self.result_path + "rna_classification/", self.iteration, dataframe_rna_classified_samples)
+			DataSet.saveResults(self.result_path + "rna_classification/", self.iteration, dataframe_rna_classified_samples)
+			auxlog.log('ANN PREDICTIONS TO CSV')
 			del(dataframe_rna_classified_samples)
 			del(list_position_rna_classified_samples)
 		else:
@@ -139,7 +138,7 @@ class HybridClassifier(object):
 
 		#salva os exemplos enviados para o KNN apenas para possivel identificacao posterior
 		DataSet.saveResults( self.result_path + "knn_classification/", self.iteration, dataframe_intermediate_range_samples)
-		
+		auxlog.log('KNN PREDICTIONS TO CSV')
 		test_time_start = time.time()
 		#executa o KNN para classificar os exemplos do conjunto de teste
 		self.predictions_knn = self.knn.run()
@@ -155,6 +154,7 @@ class HybridClassifier(object):
 
 		#salva o data frame modificado como o resultado final
 		DataSet.saveResults( self.result_path + "final_method_classification/", self.iteration, self.test_data_set)
+		auxlog.log('HYBRID PREDICTIONS TO CSV')
 		del(self.test_data_set)
 
 	def verifyClassesPredictions(self, predictions):

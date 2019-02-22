@@ -84,7 +84,7 @@ class EvaluateModule(object):
 					self.err_samples+=1
 
 		#arquivos para salvar informacoes resumidas das k iteracoes do cross-validation (cada linha representa uma iteracao)
-		arquivoMatriz = open(self.result_path + 'Matriz.txt', 'a+')
+		arquivoMatriz = open(self.result_path + 'matriz.txt', 'a+')
 		#salva no formato: VP, FP, FN, VN
 		textoMatriz = str(self.number_true_positives) + """,""" + str(self.number_false_positives) + ""","""+ str(self.number_false_negatives) + """,""" + str(self.number_true_negatives) + """
 """
@@ -107,36 +107,31 @@ class EvaluateModule(object):
 
 		#salva matriz de confusao no arquivo final_info de cada iteracao
 		arquivo = open(self.result_path + 'final_info_' + str(self.iteration) + '.txt', 'w')
-		texto = """		MATRIZ DE CONFUSAO
-             Predicao
-		 ATAQUE    NORMAL
-	   |--------||--------|
-ATAQUE |   """ + str(self.number_true_positives) + """    ||   """+ str(self.number_false_negatives) + """    |
-	   |--------||--------|
-NORMAL |   """+ str(self.number_false_positives) + """    ||   """+ str(self.number_true_negatives) + """    |
-	   |--------||--------|
+		texto = """	MATRIZ DE CONFUSAO
+			Predicao
+		ATAQUE    NORMAL
+		|--------||--------|
+ATAQUE 	|   """ + str(self.number_true_positives) + """    ||   """+ str(self.number_false_negatives) + """    |
+	   	|--------||--------|
+NORMAL 	|   """+ str(self.number_false_positives) + """    ||   """+ str(self.number_true_negatives) + """    |
+	   	|--------||--------|
 		"""
 
-		texto+= """TOTAL DE EXEMPLOS: """ + str(self.total_samples) + """ 	|
-|--------||--------|
+		texto+= """TOTAL DE EXEMPLOS: """ + str(self.total_samples) + """
 """
-		texto+= """TOTAL DE EXEMPLOS CORRETOS: """ + str(self.acc_samples) + """ 	|
-|--------||--------|
+		texto+= """TOTAL DE EXEMPLOS CORRETOS: """ + str(self.acc_samples) + """
 """
-		texto+= """TOTAL DE EXEMPLOS ERRADOS: """ + str(self.err_samples) + """ 	|
-|--------||--------|
+		texto+= """TOTAL DE EXEMPLOS ERRADOS: """ + str(self.err_samples) + """
 """
-		texto+= """PORCENTAGEM ACERTOS: """ + str((100/float(self.total_samples)) * self.acc_samples) + """ 	|
-|--------||--------|
+		texto+= """PORCENTAGEM ACERTOS: """ + str((100/float(self.total_samples)) * self.acc_samples) + """
 """
-		texto+= """PORCENTAGEM ERROS: """ + str((100/float(self.total_samples)) * self.err_samples) + """ 	|
-|--------||--------|
+		texto+= """PORCENTAGEM ERROS: """ + str((100/float(self.total_samples)) * self.err_samples) + """
 """
-		texto+="""TEMPO DE EXECUCAO: """ + str(self.tempo_execucao) + """  |||
+		texto+="""TEMPO DE EXECUCAO: """ + str(self.tempo_execucao) + """
 """
-		texto+="""TEMPO DE TREINO: """ + str(self.training_time) + """  |||
+		texto+="""TEMPO DE TREINO: """ + str(self.training_time) + """
 """
-		texto+="""TEMPO DE TESTE: """ + str(self.test_time) + """  |||
+		texto+="""TEMPO DE TESTE: """ + str(self.test_time) + """
 """
 		#recupera quantidade de exemplos que foram submetidos ao KNN
 		if (DataSet.checkPathBoolean(self.result_path + "../knn_classification/")):
