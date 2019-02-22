@@ -51,7 +51,7 @@ class CrossValidation(object):
 	def foldExecution(self):
 		i = self.iteration
 
-		for self.iteration in range(i, self.numberOfFolds):
+		for self.iteration in range(i,(self.numberOfFolds+1)):
 			tempo_inicio = time.time()
 			self.loadTrainingData()
 			self.loadTestData()
@@ -108,7 +108,6 @@ class CrossValidation(object):
 	def loadTrainingData(self):
 		#exclude current cross validation iteration corresponding fold
 		trainFolds = glob.glob(self.file_path + 'fold_[!' + str(self.iteration) + ']*.csv')
-		
 		self.trainingData = pd.concat((pd.read_csv(fold) for fold in trainFolds))
 
 	#carrega conjunto de teste de acordo com a iteracao atual do cross validation

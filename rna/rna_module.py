@@ -53,7 +53,11 @@ class RnaModule(object):
 
 		#funcao para interromper treinamento quando o erro for suficientemente pequeno
 		early_stopping = EarlyStopping(monitor='loss',patience=20)
+<<<<<<< HEAD
 		history = self.model.fit(self.trainingX, self.trainingY, epochs=500, verbose=1, callbacks=[early_stopping])
+=======
+		fit = self.model.fit(self.data_set_samples, self.data_set_labels, epochs=500, verbose=2, callbacks=[early_stopping])
+>>>>>>> 2da67dff10b351ca93c72e138f2b83474fbc06d4
 
     #funcao para criar a rna para a abordagem hibrida
 	def generateHybridModel(self):
